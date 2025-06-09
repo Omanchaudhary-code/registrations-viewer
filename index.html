@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registrations</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  </style>
+  <link rel="icon" href="data:,">
+</head>
+<body>
+  <h1>Registrations</h1>
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Team Name</th>
+        <th>Leader Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    window.onload = async function () {
+      const { createClient } = supabase;
+
+      const supabaseUrl = 'https://slmprqzzyhuvwillbwla.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsbXBycXp6eWh1dndpbGxid2xhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1NzA5MjEsImV4cCI6MjA2NDE0NjkyMX0.q_rrEiar2HFWXkiVqCTSv01SeBlPyMh0JqzwJSPegfg';
+
+      const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+      async function loadData() {
+        const { data, error } = await supabaseClient
+          .from('registrations')
+          .select('team_name, leader_name, leader_email, leader_phone');
+
+        if (error) {
+          console.error('Error fetching data:', error);
+          return;
+        }
+
+        const tbody = document.querySelector('#data-table tbody');
+        tbody.innerHTML = ''; // Clear existing data if any
+
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.team_name}</td>
+            <td>${row.leader_name}</td>
+            <td>${row.leader_email}</td>
+            <td>${row.leader_phone}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      loadData();
+    };
+  </script>
+</body>
+</html>
